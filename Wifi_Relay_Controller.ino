@@ -14,30 +14,29 @@ ESP pin 13 = pin D7
 ESP pin 15 = pin D8
 */
 
-#include"ESP8266PinAssignments.h"
 #include <ESP8266WiFi.h>
 
-int Received = 0;
+int Received      = 0;
 int relay_1_state = 1;
 int relay_2_state = 1;
 int relay_3_state = 1;
 int relay_4_state = 1;
 
-int relay_1 = 5;
-int relay_2 = 4;
-int relay_3 = 16;
-int relay_4 = 14;
+int relay_1       = 5;
+int relay_2       = 4;
+int relay_3       = 16;
+int relay_4       = 14;
 
-int tempSensor = A0;
+int tempSensor    = A0;
 
-int temp = 0;
+int temp          = 0;
 
 int voltIn;
 int milliVolts;
 
 int val = 1; 
 
-const char* ssid = "SSID";
+const char* ssid     = "SSID";
 const char* password = "PASSWORD";
 
 //String html ="<!DOCTYPE html> <html> <body> <button type=\"button\" onclick=\"alert('Hello world!')\" value=\"/relay1\">LED ON</button> <button type=\"button\" onclick=\"alert('Hello world!')\" value=\"0\">LED OFF</button> </body> </html>";
@@ -174,7 +173,6 @@ void loop(){
   if (req.indexOf("/get_temp") != -1){
    Serial.println(temp);  
    client.print(tempShow);
-
   }
    
   if (relay_1_state == 0 && req.indexOf("/relay1") != -1){
@@ -193,7 +191,6 @@ void loop(){
     digitalWrite(relay_2,LOW);
     relay_2_state =1;
     client.print(rel2);
-
   }
 
   else if (relay_2_state == 1 && req.indexOf("/relay2") != -1)
@@ -207,7 +204,6 @@ void loop(){
     digitalWrite(relay_3,LOW);
     relay_3_state =1;
     client.print(rel3);
-
   }
 
   else if (relay_3_state == 1 && req.indexOf("/relay3") != -1){
