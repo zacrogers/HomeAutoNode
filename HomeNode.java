@@ -6,7 +6,7 @@ public class HomeNode{
   private String ipAddr;
   private String name;
   
-  public HomeNode(String name, String ipAddr int numRelays){
+  public HomeNode(String name, String ipAddr, int numRelays){
     this.name      = name;
     this.ipAddr    = ipAddr;
     this.numRelays = numRelays;
