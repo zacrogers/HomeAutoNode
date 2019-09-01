@@ -5,5 +5,6 @@ Controller for esp8266 based relay controlled power strip, with temperature sens
 
   -home_node.py              : Sends control messages to ESP8266
 
-  -node_gui.py               : Basic tkinter GUI with 4 buttons for toggling relay state
+  -NodeControl.py            : Basic kivy gui with 4 buttons for toggling relay state
 
+  -NodeControl.kv            : Gui layout file
