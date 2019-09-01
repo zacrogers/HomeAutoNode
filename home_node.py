@@ -1,17 +1,14 @@
 '''
-	Controller for wifi arduino power outlet node
-
-	Toggle relays on and off
-	Get temperature from sensor in unit
+Object to represent smart home node
 '''
 from bs4 import BeautifulSoup
 import requests
 
 class home_node:
-	def __init__(self, ip, name, num_relays = 4):
+	def __init__(self, ip, name):
 		self.ip = ip
 		self.name = name
-		self.num_relays = num_relays
+		self.num_relays = 4
 
 	#Set relay based on old arduino code
 	def set_relay_old(self, relay_num):
@@ -21,7 +18,7 @@ class home_node:
 		except requests.exceptions.RequestException as e:	
 			print (e)
 
-	''' Set relay state '''
+	''''''
 	def set_relay(self, relay_num, state):
 		try:
 			requests.get('http://{}/re{}_{}'.format(self.ip, relay_num, state))
@@ -29,7 +26,11 @@ class home_node:
 		except requests.exceptions.RequestException as e:	
 			print (e)
 
-	''' Get temperature from node '''
+	# def set_all(self, state):
+	# 	if state is 'on':
+	# 		set_relay()
+
+
 	def get_temp(self):
 		text = "NC"
 		try:
@@ -42,3 +43,5 @@ class home_node:
 			print (e)
 
 		return text		
+
+#'http://192.168.20.100/relay1'

@@ -1,0 +1,43 @@
+<MainWindow>:
+    orientation: 'vertical'
+    GridLayout:
+        rows:6
+        cols:2
+        padding:10
+        spacing:10
+
+        Button:
+            text:"1"
+            height: 50
+            font_size: 30
+            on_press: app.node.set_relay_old('1')
+
+        Button:
+            text:"2"
+            height: 50
+            font_size: 30
+            on_press: app.node.set_relay_old('2')
+
+        Button:
+            text:"3"
+            height: 50
+            font_size: 30
+            on_press: app.node.set_relay_old('3')
+
+        Button:
+            text:"4"
+            height: 50
+            font_size: 30
+            on_press: app.node.set_relay_old('4')
+
+        Button:
+            text:"ALL"
+            height: 50
+            font_size: 30
+            background_color:(1,1,1,20)
+            
+        Label:
+            id: my_label
+            text: app.node.get_temp()
+            font_size: 30
+
