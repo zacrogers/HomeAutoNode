@@ -15,8 +15,8 @@ typedef struct
 const char* ssid     = "SSID";
 const char* password = "PASSWORD";
 
-const uint8_t RELAYS[NUM_RELAYS]    = {5, 4, 16, 14};
-const *char   RELAY_STR[NUM_RELAYS] = {"/relay1", "/relay2", "/relay3", "/relay4"};
+const uint8_t     RELAYS[NUM_RELAYS]    = {5, 4, 16, 14};
+const *char       RELAY_STR[NUM_RELAYS] = {"/relay1", "/relay2", "/relay3", "/relay4"};
 
 const StateString STATE_STR[NUM_RELAYS] = {{.high = "1_high", .low = "1_low"}, 
                                            {.high = "2_high", .low = "2_low"}, 
