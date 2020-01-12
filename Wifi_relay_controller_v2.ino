@@ -18,20 +18,23 @@ ESP pin 15 = pin D8
 #define NUM_RELAYS 4
 
 
+typedef struct 
+{
+    char* high;
+    char8 low;
+}StateString;  
+
 int Received      = 0;
-int relay_1_state = 1;
-int relay_2_state = 1;
-int relay_3_state = 1;
-int relay_4_state = 1;
 
+uint8_t states[NUM_RELAYS] = {1, 1, 1, 1};
 
+const uint8_t RELAYS[NUM_RELAYS]  = {5, 4, 16, 14};
+const *char RELAY_STR[NUM_RELAYS] = {"/relay1", "/relay2", "/relay3", "/relay4"};
 
-uint8_t RELAYS[NUM_RELAYS] = {5, 4, 16, 14};
-
-int relay_1       = 5;
-int relay_2       = 4;
-int relay_3       = 16;
-int relay_4       = 14;
+const StateString STATE_STR[NUM_RELAYS] = {{.high = "1_high", .low = "1_low"}, 
+                                           {.high = "2_high", .low = "2_low"}, 
+                                           {.high = "3_high", .low = "3_low"}, 
+                                           {.high = "4_high", .low = "4_low"}};
 
 int tempSensor    = A0;
 
@@ -60,16 +63,17 @@ void setup() {
   for(uint8_t relay = 0; relay < NUM_RELAYS; ++relay)
   {
     pinMode(RELAYS[relay], OUTPUT);
+    digitalWrite(RELAYS[relay], HIGH);
   }
-  pinMode(relay_1, OUTPUT);
-  pinMode(relay_2, OUTPUT);
-  pinMode(relay_3, OUTPUT);
-  pinMode(relay_4, OUTPUT);
+//   pinMode(relay_1, OUTPUT);
+//   pinMode(relay_2, OUTPUT);
+//   pinMode(relay_3, OUTPUT);
+//   pinMode(relay_4, OUTPUT);
   
-  digitalWrite(relay_1, HIGH);
-  digitalWrite(relay_2, HIGH);
-  digitalWrite(relay_3, HIGH);
-  digitalWrite(relay_4, HIGH);    
+//   digitalWrite(relay_1, HIGH);
+//   digitalWrite(relay_2, HIGH);
+//   digitalWrite(relay_3, HIGH);
+//   digitalWrite(relay_4, HIGH);    
   
   // Connect to WiFi network
   Serial.println();
@@ -152,8 +156,9 @@ void loop(){
   Serial.println(req);
   client.flush();
  
-  temp = (((5.0 * analogRead(tempSensor)) / 1024) * 100.0)-10;
+//   temp = (((5.0 * analogRead(tempSensor)) / 1024) * 100.0)-10;
   
+    /*
   String rel1 = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
   rel1 += (relay_1_state)?"1_high":"1_low";
 
@@ -165,9 +170,10 @@ void loop(){
 
   String rel4 = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
   rel4 += (relay_4_state)?"4_high":"4_low";
+  */
 
-  String tempShow = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-  tempShow += (temp);  
+//   String tempShow = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+//   tempShow += (temp);  
 
   String allStates = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
   allStates += (relay_states(relay_1_state, relay_2_state, relay_3_state, relay_4_state));  
@@ -178,13 +184,19 @@ void loop(){
     client.print(allStates);  
   }
 
-
-  
-  if (req.indexOf("/get_temp") != -1){
-   Serial.println(temp);  
-   client.print(tempShow);
-  }
+//   if (req.indexOf("/get_temp") != -1){
+//    Serial.println(temp);  
+//    client.print(tempShow);
+//   }
    
+    update_temp();
+    
+    for(uint8_t relay = 0; relay < NUM_RELAYS; ++relay)
+    {
+        update_state(relay);
+    }
+    
+    /*
   if (relay_1_state == 0 && req.indexOf("/relay1") != -1){
     digitalWrite(relay_1,LOW);
     relay_1_state =1;
@@ -235,47 +247,7 @@ void loop(){
     relay_4_state=0;
     client.print(rel4);
   }
-//    if(req.indexOf("/re1_on")){
-//      digitalWrite(relay_1,HIGH);
-//      relay_1_state=0;
-//      client.print(rel1);
-//    }
-//    if(req.indexOf("/re1_off")){
-//      digitalWrite(relay_1,LOW);
-//      relay_1_state=1;
-//      client.print(rel1);
-//    }
-//    if(req.indexOf("/re2_on")){
-//      digitalWrite(relay_2,HIGH);
-//      relay_2_state=0;
-//      client.print(rel2);
-//    }
-//    if(req.indexOf("/re2_off")){
-//      digitalWrite(relay_2,LOW);
-//      relay_2_state=0;
-//      client.print(rel2);
-//    }
-//    if(req.indexOf("/re3_on")){
-//      digitalWrite(relay_3,HIGH);
-//      relay_3_state=0;
-//      client.print(rel3);
-//    }
-//    if(req.indexOf("/re3_off")){
-//      digitalWrite(relay_3,LOW);
-//      relay_3_state=0;
-//      client.print(rel3);
-//    }
-//    if(req.indexOf("/re4_on")){
-//      digitalWrite(relay_4,HIGH);
-//      relay_4_state=0;
-//      client.print(rel4);
-//    }
-//    if(req.indexOf("/re4_off")){
-//      digitalWrite(relay_4,LOW);
-//      relay_4_state=0;
-//      client.print(rel4);
-//    }
-  client.flush();
+  client.flush();*/
 
 
   // Send the response to the client
@@ -302,24 +274,37 @@ int relay_states(int r1, int r2, int r3, int r4){
   
     return states_code;
 }
-//void mirror_control(req, client){
-//
-//
-//}
-//  
-//void get_status(){}
-//    String rel1 = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-//    rel1 += (relay_1_state)?"1_high":"1_low";
-//    
-//    String rel2 = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-//    rel2 += (relay_2_state)?"2_high":"2_low";
-//    
-//    String rel3 = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-//    rel3 += (relay_3_state)?"3_high":"3_low";
-//    
-//    String rel4 = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-//    rel4 += (relay_4_state)?"4_high":"4_low";
-//    
-//    String tempShow = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-//    tempShow += (temp);  
-//}
+
+void update_temp(void)
+{
+    temp = (((5.0 * analogRead(tempSensor)) / 1024) * 100.0)-10;
+    String tempShow = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+    tempShow += (temp); 
+
+    if (req.indexOf("/get_temp") != -1)
+    {
+        Serial.println(temp);  
+        client.print(tempShow);
+    }
+}
+
+void update_state(uint8_t relay)
+{
+    String relay_state = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+    relay_state += (states[relay]) ? STATE_STR[relay].high : STATE_STR[relay].low;
+    
+    if(states[relay] == 0 && req.indexOf(RELAY_STR[relay]) != -1)
+    {
+        digtalWrite(RELAYS[relay], LOW);
+        states[relay] = 1;
+        client.print(relay_state);
+    }
+ 
+    if(states[relay] == 1 && req.indexOf(RELAY_STR[relay]) != -1)
+    {
+        digtalWrite(RELAYS[relay], HIGH);
+        states[relay] = 0;
+        client.print(relay_state);
+    }  
+}
+
